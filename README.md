@@ -23,6 +23,26 @@
 
 ---
 
+## 🖼️ Ekran görüntüləri
+
+<div align="center">
+
+### 🏠 Yeni yükləmə formu
+<img src="assets/screenshots/01-form.png" alt="Yeni yükləmə formu" width="800" />
+
+### ⚡ Aktiv yükləmə (real-time progress)
+<img src="assets/screenshots/03-downloading.png" alt="Aktiv yükləmə" width="800" />
+
+### ✅ Tamamlanmış yükləmə
+<img src="assets/screenshots/04-done.png" alt="Tamamlanmış" width="800" />
+
+### 📜 Tarixçə görünüşü
+<img src="assets/screenshots/05-history.png" alt="Tarixçə" width="800" />
+
+</div>
+
+---
+
 ## 📑 Mündəricat
 
 - [✨ Xüsusiyyətlər](#-xüsusiyyətlər)

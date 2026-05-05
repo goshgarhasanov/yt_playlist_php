@@ -29,6 +29,9 @@ function init() {
     showJobCard();
     poll(resumeId);
   }
+  if (params.get('view') === 'history' || location.hash === '#history') {
+    switchView('history');
+  }
 }
 
 function switchView(view) {
@@ -89,7 +92,7 @@ function poll(jobId) {
   if (state.pollTimer) clearInterval(state.pollTimer);
   showJobCard();
   tick(jobId);
-  state.pollTimer = setInterval(() => tick(jobId), 1000);
+  state.pollTimer = setInterval(() => tick(jobId), 350);
 }
 
 async function tick(jobId) {

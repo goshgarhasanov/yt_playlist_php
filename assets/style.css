@@ -284,6 +284,19 @@ input[type="url"]::placeholder { color: var(--muted); }
 }
 .btn-danger:hover { background: rgba(255,90,90,.18); }
 
+.btn-stop {
+  background: rgba(255,90,90,.12);
+  color: var(--bad);
+  border: 1px solid rgba(255,90,90,.35);
+  font-weight: 600;
+}
+.btn-stop:hover {
+  background: rgba(255,90,90,.22);
+  border-color: rgba(255,90,90,.55);
+  color: #ff8585;
+}
+.btn-stop svg { color: var(--bad); }
+
 .btn-sm { padding: 7px 12px; font-size: 13px; }
 
 /* JOB CARD */
@@ -392,7 +405,7 @@ input[type="url"]::placeholder { color: var(--muted); }
   background: linear-gradient(90deg, var(--accent), var(--accent-2));
   border-radius: 999px;
   position: relative;
-  transition: width .3s ease;
+  transition: width .25s linear;
   overflow: hidden;
 }
 .bar-shine {

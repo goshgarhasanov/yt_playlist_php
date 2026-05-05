@@ -160,7 +160,7 @@ while (true) {
     unset($buf);
 
     $now = microtime(true);
-    if ($now - $lastWrite > 0.4) {
+    if ($now - $lastWrite > 0.15) {
         $status['updated_at'] = date('c');
         write_status($jobId, $status);
         $lastWrite = $now;
@@ -179,7 +179,7 @@ while (true) {
         break;
     }
 
-    usleep(150000);
+    usleep(50000);
 }
 
 @fclose($pipes[1]);
@@ -213,10 +213,14 @@ function parse_line(string $line, array &$status): void {
     }
 
     if (preg_match('/Downloading item (\d+) of (\d+)/i', $line, $m)) {
-        $status['current_item'] = (int)$m[1];
-        $status['total_items'] = (int)$m[2];
-        $status['percent'] = 0.0;
+        $cur = (int)$m[1];
+        $total = (int)$m[2];
+        $status['current_item'] = $cur;
+        $status['total_items'] = $total;
+        $status['percent'] = $total > 0 ? (($cur - 1) / $total) * 100.0 : 0.0;
         $status['phase'] = 'downloading';
+        $status['speed'] = '';
+        $status['eta'] = '';
         return;
     }
 

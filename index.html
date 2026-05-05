@@ -3,74 +3,187 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>YouTube Playlist Downloader</title>
+  <title>YT Downloader</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
-  <main class="wrap">
-    <header>
-      <h1>YouTube Playlist Downloader</h1>
-      <p class="sub">Playlist və ya tək video linki yapışdırın, MP3 və ya MP4 formatında yükləyin.</p>
-    </header>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.76-1.77C18.25 5 12 5 12 5s-6.25 0-7.84.43A2.5 2.5 0 0 0 2.4 7.2C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 0 0 1.76 1.77C5.75 19 12 19 12 19s6.25 0 7.84-.43a2.5 2.5 0 0 0 1.76-1.77C22 15.2 22 12 22 12s0-3.2-.4-4.8zM10 15V9l5 3-5 3z"/></svg>
+        </div>
+        <div>
+          <div class="brand-name">YT Downloader</div>
+          <div class="brand-sub">Playlist · Audio · Video</div>
+        </div>
+      </div>
 
-    <section class="card">
-      <form id="form">
-        <label for="url">Playlist / Video URL</label>
-        <input
-          type="url"
-          id="url"
-          name="url"
-          placeholder="https://www.youtube.com/playlist?list=..."
-          required
-          autocomplete="off"
-        />
+      <nav class="side-nav">
+        <button class="nav-btn active" data-view="new">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          Yeni yükləmə
+        </button>
+        <button class="nav-btn" data-view="history">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/></svg>
+          Tarixçə
+          <span class="badge-count" id="historyCount"></span>
+        </button>
+      </nav>
 
-        <div class="row">
-          <fieldset>
-            <legend>Format</legend>
-            <label class="radio"><input type="radio" name="format" value="mp3" checked /> MP3 (audio)</label>
-            <label class="radio"><input type="radio" name="format" value="mp4" /> MP4 (video)</label>
-          </fieldset>
+      <div class="side-footer">
+        <a href="https://github.com/goshgarhasanov/yt_playlist_php" target="_blank" rel="noopener" class="footer-link">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.9 1.4 3.6 1 .1-.8.4-1.4.8-1.7-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.3-3.2-.1-.4-.6-1.6.1-3.3 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.3.8.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.2.8 2.4v3.6c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg>
+          GitHub
+        </a>
+        <span class="version">v1.0</span>
+      </div>
+    </aside>
 
-          <fieldset>
-            <legend>Keyfiyyət</legend>
-            <select id="quality" name="quality">
-              <option value="best">Ən yaxşı</option>
-              <option value="medium">Orta (720p / 192kbps)</option>
-              <option value="low">Aşağı (480p / 128kbps)</option>
-            </select>
-          </fieldset>
+    <main class="main">
+      <!-- NEW DOWNLOAD VIEW -->
+      <section class="view" id="view-new">
+        <header class="view-head">
+          <h1>Yeni yükləmə</h1>
+          <p>YouTube linkini yapışdırın, format və keyfiyyət seçin.</p>
+        </header>
+
+        <div class="card form-card">
+          <form id="form">
+            <div class="field">
+              <label for="url">URL</label>
+              <div class="input-wrap">
+                <svg class="input-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+                <input
+                  type="url"
+                  id="url"
+                  name="url"
+                  placeholder="https://www.youtube.com/playlist?list=..."
+                  required
+                  autocomplete="off"
+                  spellcheck="false"
+                />
+              </div>
+            </div>
+
+            <div class="grid">
+              <div class="field">
+                <label>Format</label>
+                <div class="seg" role="radiogroup">
+                  <input type="radio" name="format" value="mp3" id="fmt-mp3" checked />
+                  <label for="fmt-mp3" class="seg-opt">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                    MP3
+                  </label>
+                  <input type="radio" name="format" value="mp4" id="fmt-mp4" />
+                  <label for="fmt-mp4" class="seg-opt">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                    MP4
+                  </label>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="quality">Keyfiyyət</label>
+                <select id="quality" name="quality">
+                  <option value="best">Ən yaxşı</option>
+                  <option value="medium">Orta (720p / 192kbps)</option>
+                  <option value="low">Aşağı (480p / 128kbps)</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="startBtn">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Yükləməyə başla
+            </button>
+          </form>
         </div>
 
-        <button type="submit" id="startBtn">Yüklə</button>
-      </form>
-    </section>
+        <!-- ACTIVE JOB CARD -->
+        <div class="card job-card hidden" id="jobCard">
+          <div class="job-head">
+            <div class="job-info">
+              <div class="job-title" id="jobTitle">Hazırlanır...</div>
+              <div class="job-meta" id="jobMeta"></div>
+            </div>
+            <div class="job-actions">
+              <button class="btn btn-ghost btn-sm" id="cancelBtn" title="Yükləməni dayandır">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+                Dayandır
+              </button>
+            </div>
+          </div>
 
-    <section class="card hidden" id="progressCard">
-      <h2>Yüklənmə statusu</h2>
-      <div class="status-line">
-        <span id="state" class="badge">gözləyir</span>
-        <span id="itemInfo"></span>
-      </div>
-      <div class="progress">
-        <div class="bar" id="bar"></div>
-      </div>
-      <div class="meta">
-        <span id="percent">0%</span>
-        <span id="speed"></span>
-        <span id="eta"></span>
-      </div>
-      <details>
-        <summary>Log</summary>
-        <pre id="log"></pre>
-      </details>
-    </section>
+          <div class="phases" id="phases">
+            <div class="phase" data-phase="queued"><span class="dot"></span>Növbədə</div>
+            <div class="phase" data-phase="fetching"><span class="dot"></span>Məlumat</div>
+            <div class="phase" data-phase="downloading"><span class="dot"></span>Yüklənir</div>
+            <div class="phase" data-phase="converting"><span class="dot"></span>Çevrilir</div>
+            <div class="phase" data-phase="finalizing"><span class="dot"></span>Bitir</div>
+          </div>
 
-    <section class="card hidden" id="filesCard">
-      <h2>Yüklənmiş fayllar</h2>
-      <ul id="fileList"></ul>
-    </section>
-  </main>
+          <div class="progress-wrap">
+            <div class="progress">
+              <div class="bar" id="bar"><span class="bar-shine"></span></div>
+            </div>
+            <div class="progress-meta">
+              <span class="percent" id="percent">0%</span>
+              <span class="dot-sep">·</span>
+              <span id="speed">—</span>
+              <span class="dot-sep">·</span>
+              <span id="eta">ETA —</span>
+            </div>
+          </div>
+
+          <div class="error-box hidden" id="errorBox">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="errorMsg"></span>
+          </div>
+
+          <details class="log-details">
+            <summary>Log baxışı</summary>
+            <pre id="log" class="log"></pre>
+          </details>
+        </div>
+
+        <!-- COMPLETED FILES CARD -->
+        <div class="card files-card hidden" id="filesCard">
+          <div class="files-head">
+            <div>
+              <div class="files-title">Yüklənmiş fayllar</div>
+              <div class="files-sub" id="filesSummary"></div>
+            </div>
+            <button class="btn btn-ghost btn-sm" id="downloadAllBtn" title="Hamısını ZIP olaraq yüklə (planlanır)" style="display:none">
+              ZIP
+            </button>
+          </div>
+          <ul class="file-list" id="fileList"></ul>
+        </div>
+      </section>
+
+      <!-- HISTORY VIEW -->
+      <section class="view hidden" id="view-history">
+        <header class="view-head">
+          <h1>Tarixçə</h1>
+          <p>Bütün keçmiş yükləmələr.</p>
+        </header>
+
+        <div class="history-list" id="historyList"></div>
+        <div class="empty hidden" id="historyEmpty">
+          <div class="empty-icon">
+            <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+          </div>
+          <div>Hələ heç bir yükləmə yoxdur</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
 
   <script src="assets/app.js"></script>
 </body>

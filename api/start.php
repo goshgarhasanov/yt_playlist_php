@@ -35,34 +35,49 @@ file_put_contents($jDir . '/config.json', json_encode([
     'format' => $format,
     'quality' => $quality,
     'created_at' => date('c'),
-], JSON_UNESCAPED_UNICODE));
+], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 
 write_status($jobId, [
     'state' => 'queued',
+    'phase' => 'queued',
     'percent' => 0,
     'current_item' => 0,
     'total_items' => 0,
     'speed' => '',
     'eta' => '',
-    'log' => '',
+    'title' => '',
+    'pid' => 0,
+    'started_at' => date('c'),
+    'updated_at' => date('c'),
+    'finished_at' => null,
+    'error' => null,
 ]);
 
 $worker = realpath(ROOT_DIR . '/worker.php');
 $phpBin = PHP_BINARY;
-$logFile = $jDir . '/log.txt';
+$workerLog = $jDir . '/worker.log';
 
-$cmd = sprintf(
-    'start /B "" "%s" "%s" "%s" > "%s" 2>&1',
-    $phpBin,
-    $worker,
-    $jobId,
-    $logFile
-);
-
-$proc = popen($cmd, 'r');
-if ($proc === false) {
-    json_response(['ok' => false, 'error' => 'İşçi proses başladıla bilmədi'], 500);
+if (PHP_OS_FAMILY === 'Windows') {
+    $cmd = sprintf(
+        'start /B "" "%s" "%s" "%s" > "%s" 2>&1',
+        $phpBin,
+        $worker,
+        $jobId,
+        $workerLog
+    );
+    $proc = popen($cmd, 'r');
+    if ($proc === false) {
+        json_response(['ok' => false, 'error' => 'İşçi proses başladıla bilmədi'], 500);
+    }
+    pclose($proc);
+} else {
+    $cmd = sprintf('%s %s %s > %s 2>&1 &',
+        escapeshellarg($phpBin),
+        escapeshellarg($worker),
+        escapeshellarg($jobId),
+        escapeshellarg($workerLog)
+    );
+    exec($cmd);
 }
-pclose($proc);
 
 json_response(['ok' => true, 'job_id' => $jobId]);

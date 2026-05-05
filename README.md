@@ -1,362 +1,449 @@
-# YouTube Playlist Downloader (Core PHP)
+<div align="center">
 
-Sadə, lakin tam işləyən YouTube playlist / video yükləyici. **Backend** sırf core PHP (heç bir framework yoxdur), **frontend** isə vanilla HTML / CSS / JavaScript-dir. Yükləmə işini [`yt-dlp`](https://github.com/yt-dlp/yt-dlp) və [`ffmpeg`](https://ffmpeg.org/) görür, PHP onları `proc_open` ilə idarə edir və real-time progress göstərir.
+# 🎬 YT Downloader
 
----
+### YouTube playlist və video yükləyici — Core PHP backend, Vanilla JS frontend
 
-## Mündəricat
+[![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/)
+[![yt-dlp](https://img.shields.io/badge/yt--dlp-Powered-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://github.com/yt-dlp/yt-dlp)
+[![FFmpeg](https://img.shields.io/badge/FFmpeg-Required-007808?style=for-the-badge&logo=ffmpeg&logoColor=white)](https://ffmpeg.org/)
+[![License](https://img.shields.io/badge/License-MIT-2EA44F?style=for-the-badge)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-5B8DEF?style=for-the-badge)](#)
 
-- [Xüsusiyyətlər](#xüsusiyyətlər)
-- [Tələblər](#tələblər)
-- [Quraşdırma](#quraşdırma)
-- [İşə salmaq](#işə-salmaq)
-- [İstifadə](#i̇stifadə)
-- [Layihə quruluşu](#layihə-quruluşu)
-- [Necə işləyir](#necə-i̇şləyir)
-- [API endpoint-lər](#api-endpoint-lər)
-- [Konfiqurasiya](#konfiqurasiya)
-- [Təhlükəsizlik](#təhlükəsizlik)
-- [Tez-tez verilən suallar](#tez-tez-verilən-suallar)
-- [Lisenziya](#lisenziya)
+[**🚀 Başla**](#-i̇şə-salmaq) ·
+[**📖 Sənəd**](#-mündəricat) ·
+[**🐛 Bug**](https://github.com/goshgarhasanov/yt_playlist_php/issues) ·
+[**⭐ Star**](https://github.com/goshgarhasanov/yt_playlist_php)
+
+</div>
 
 ---
 
-## Xüsusiyyətlər
-
-- ✅ **Playlist** və **tək video** yükləməsi (YouTube, YouTube Music)
-- ✅ İki format seçimi:
-  - **MP3** — audio çıxarışı, thumbnail (albom şəkli) + metadata
-  - **MP4** — video, ən yaxşı video + audio birləşməsi
-- ✅ Üç keyfiyyət səviyyəsi (ən yaxşı / orta / aşağı)
-- ✅ **Real-time progress**:
-  - Cari element / ümumi sayı (məsələn `3 / 12`)
-  - Faiz (per-item və ümumi playlist üzrə)
-  - Yükləmə sürəti və ETA
-  - Açıla bilən log paneli (yt-dlp-in birbaşa çıxışı)
-- ✅ Tamamlanan fayllar siyahısı və brauzerdən birbaşa endirmə
-- ✅ Hər iş üçün ayrıca qovluq (`jobs/<id>` + `downloads/<id>`)
-- ✅ URL validation (yalnız `youtube.com`, `youtu.be`, `music.youtube.com` qəbul olunur)
-- ✅ Path traversal qoruması (download endpoint-də)
-- ✅ Tək başına PHP CLI server ilə işləyir — Apache / Nginx tələb olunmur
-- ✅ Tamamilə yerli işləyir, heç bir xarici servisə bağımlılıq yoxdur
+> **Sadə, peşəkar, framework-süz.** YouTube playlist və ya tək video linkini yapışdır, MP3 / MP4 yüklə. Real-time progress, job tarixçəsi, dayandırma — hamısı sırf core PHP + vanilla HTML/CSS/JS ilə.
 
 ---
 
-## Tələblər
+## 📑 Mündəricat
 
-| Komponent | Versiya | Yoxlanılır |
-|-----------|---------|------------|
-| **PHP** | 8.1 və ya yuxarı | `php -v` |
-| **yt-dlp** | son versiya | `yt-dlp --version` |
-| **ffmpeg** | hər hansı stabil | `ffmpeg -version` |
+- [✨ Xüsusiyyətlər](#-xüsusiyyətlər)
+- [📦 Tələblər](#-tələblər)
+- [⚙️ Quraşdırma](#️-quraşdırma)
+- [🚀 İşə salmaq](#-i̇şə-salmaq)
+- [🎯 İstifadə](#-i̇stifadə)
+- [🏗️ Quruluş](#️-layihə-quruluşu)
+- [🔄 Necə işləyir](#-necə-i̇şləyir)
+- [🌐 API endpoint-lər](#-api-endpoint-lər)
+- [⚙️ Konfiqurasiya](#️-konfiqurasiya)
+- [🛡️ Təhlükəsizlik](#️-təhlükəsizlik)
+- [❓ FAQ](#-tez-tez-verilən-suallar)
+- [📜 Lisenziya](#-lisenziya)
 
-Hər üç alət `PATH` mühit dəyişənində olmalıdır.
+---
 
-### Windows-da quraşdırma
+## ✨ Xüsusiyyətlər
+
+| 🎵 | **Audio yükləmə** — MP3, thumbnail + metadata daxil olmaqla |
+|---|---|
+| 🎬 | **Video yükləmə** — MP4, ən yaxşı video + audio birləşməsi |
+| 📃 | **Playlist dəstəyi** — bütün siyahını və ya tək videonu |
+| ⚡ | **Real-time progress** — sürət, ETA, faiz, faza |
+| 🛑 | **Stop / Cancel** — istənilən vaxt dayandır |
+| 📜 | **Job tarixçəsi** — bütün keçmiş yükləmələr |
+| 🎨 | **Modern UI** — dark theme, responsive, animasiyalı |
+| 🔒 | **Təhlükəsiz** — path traversal qoruması, URL whitelist |
+| 🪶 | **Yüngül** — heç bir framework, heç bir dependency manager |
+| 🌐 | **Cross-platform** — Windows, macOS, Linux |
+
+---
+
+## 📦 Tələblər
+
+| Komponent | Versiya | Yoxlama |
+|-----------|---------|---------|
+| 🐘 **PHP** | `8.1+` | `php -v` |
+| 📥 **yt-dlp** | Son versiya | `yt-dlp --version` |
+| 🎞️ **ffmpeg** | Stabil versiya | `ffmpeg -version` |
+
+> ⚠️ Hər üç alət sistemin `PATH` mühit dəyişənində olmalıdır.
+
+### 🪟 Windows
 
 ```powershell
-# PHP (winget ilə)
 winget install PHP.PHP
-
-# yt-dlp (Python varsa)
-pip install -U yt-dlp
-
-# ffmpeg
 winget install Gyan.FFmpeg
+pip install -U yt-dlp
 ```
 
-### macOS / Linux
+### 🍎 macOS
 
 ```bash
-# Homebrew
 brew install php yt-dlp ffmpeg
+```
 
-# Linux (Debian / Ubuntu)
+### 🐧 Linux (Debian / Ubuntu)
+
+```bash
 sudo apt install php-cli ffmpeg
-sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
+sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp \
+  -o /usr/local/bin/yt-dlp
 sudo chmod a+rx /usr/local/bin/yt-dlp
 ```
 
 ---
 
-## Quraşdırma
+## ⚙️ Quraşdırma
 
 ```bash
-git clone https://github.com/<istifadeci>/yt_playlist_php.git
+git clone https://github.com/goshgarhasanov/yt_playlist_php.git
 cd yt_playlist_php
 ```
 
-Heç bir `composer install`, `npm install` yoxdur — birbaşa işə sala bilərsiniz.
+> 🎯 **Heç bir** `composer install`, `npm install`, build step yoxdur. Birbaşa işə sal.
 
 ---
 
-## İşə salmaq
+## 🚀 İşə salmaq
 
-### Windows
+<table>
+<tr>
+<td>
+
+### 🪟 Windows
 
 ```bat
 serve.bat
 ```
 
-və ya əl ilə:
+və ya
 
 ```bat
 php -S localhost:8080
 ```
 
-### macOS / Linux
+</td>
+<td>
+
+### 🍎 🐧 macOS / Linux
 
 ```bash
 php -S localhost:8080
 ```
 
-Brauzerdə açın: <http://localhost:8080>
+</td>
+</tr>
+</table>
 
-> **Qeyd:** PHP-nin built-in serveri tək thread-dədir, lakin yükləmə işi **fonda** ayrı CLI prosesdə (`worker.php`) işlədiyinə görə istifadəçi interfeysi blok olmur — eyni anda progress poll etmək və yeni iş başlatmaq mümkündür.
-
----
-
-## İstifadə
-
-1. Brauzerdə <http://localhost:8080> açın.
-2. **Playlist / Video URL** sahəsinə YouTube linki yapışdırın:
-   - Playlist: `https://www.youtube.com/playlist?list=PLxxxxx`
-   - Video: `https://www.youtube.com/watch?v=xxxxx`
-   - Qısa link: `https://youtu.be/xxxxx`
-3. **Format** seçin: MP3 (audio) və ya MP4 (video).
-4. **Keyfiyyət** seçin:
-   - **Ən yaxşı** — MP3 üçün VBR ~245kbps, MP4 üçün ən yüksək mövcud video
-   - **Orta** — MP3 ~192kbps, MP4 ən çox 720p
-   - **Aşağı** — MP3 ~128kbps, MP4 ən çox 480p
-5. **Yüklə** düyməsini basın.
-6. Progress kartını izləyin. Tamamlandıqda **Yüklənmiş fayllar** kartında hər mahnı / video üçün **Yüklə** linki çıxacaq.
-
-Bütün fayllar həmçinin yerli olaraq `downloads/<job_id>/` qovluğunda saxlanılır.
+Brauzerdə aç → **<http://localhost:8080>** 🎉
 
 ---
 
-## Layihə quruluşu
+## 🎯 İstifadə
+
+```
+1️⃣  URL-i yapışdır
+        ↓
+2️⃣  Format seç (MP3 / MP4)
+        ↓
+3️⃣  Keyfiyyət seç
+        ↓
+4️⃣  "Yükləməyə başla" düyməsini bas
+        ↓
+5️⃣  Real-time progress-i izlə
+        ↓
+6️⃣  Tamamlanan faylları endir
+```
+
+### 📌 Dəstəklənən URL formatları
+
+```
+✅ https://www.youtube.com/playlist?list=PLxxxxx
+✅ https://www.youtube.com/watch?v=xxxxx
+✅ https://youtu.be/xxxxx
+✅ https://music.youtube.com/playlist?list=xxxxx
+```
+
+### 🎚️ Keyfiyyət səviyyələri
+
+| Səviyyə | MP3 | MP4 |
+|---------|-----|-----|
+| 🥇 **Ən yaxşı** | VBR ~245kbps | Ən yüksək mövcud |
+| 🥈 **Orta** | ~192kbps | ≤ 720p |
+| 🥉 **Aşağı** | ~128kbps | ≤ 480p |
+
+---
+
+## 🏗️ Layihə quruluşu
 
 ```
 yt_playlist_php/
-├── index.html              # Əsas UI səhifəsi
-├── assets/
-│   ├── style.css           # Dark theme tərzlər
-│   └── app.js              # Frontend məntiqi (fetch + polling)
-├── api/
-│   ├── common.php          # Köməkçi funksiyalar (json, validation, status I/O)
-│   ├── start.php           # Yeni iş yaradır, worker-i fonda buraxır
-│   ├── status.php          # İş statusunu JSON kimi qaytarır
-│   └── files.php           # Faylları siyahılayır və endirir
-├── worker.php              # CLI işçi: yt-dlp-i çağırır, status yeniləyir
-├── jobs/                   # İş metadatası (hər iş ayrıca qovluqda)
-│   └── <job_id>/
-│       ├── config.json     # URL, format, keyfiyyət
-│       ├── status.json     # Cari status (state, percent, speed, ETA)
-│       └── log.txt         # yt-dlp-in tam çıxışı
-├── downloads/              # Yüklənmiş fayllar
-│   └── <job_id>/
-│       ├── 001 - Mahnı 1.mp3
-│       └── 002 - Mahnı 2.mp3
-├── serve.bat               # Windows üçün tək kliklə işə salma
-└── README.md
+│
+├── 📄 index.html            ← UI (sidebar + main view)
+├── 🎨 assets/
+│   ├── style.css            ← Dark theme tərzlər
+│   └── app.js               ← Frontend məntiqi
+│
+├── 🌐 api/
+│   ├── common.php           ← Köməkçi funksiyalar
+│   ├── start.php            ← Yeni iş başladır
+│   ├── status.php           ← Status / progress
+│   ├── cancel.php           ← Yükləməni dayandır
+│   ├── jobs.php             ← Bütün işlərin siyahısı
+│   ├── delete.php           ← İşi və faylları sil
+│   └── files.php            ← Faylları siyahıla / endir
+│
+├── ⚙️  worker.php           ← CLI işçi (yt-dlp wrapper)
+│
+├── 📁 jobs/<id>/
+│   ├── config.json          ← URL, format, keyfiyyət
+│   ├── status.json          ← Cari status
+│   ├── yt.log               ← yt-dlp çıxışı
+│   └── worker.log           ← İşçi log
+│
+└── 📥 downloads/<id>/
+    └── *.mp3 / *.mp4
 ```
 
 ---
 
-## Necə işləyir
+## 🔄 Necə işləyir
 
-```
-┌──────────┐                       ┌─────────────┐
-│ Brauzer  │                       │ PHP Server  │
-│  (UI)    │                       │ (built-in)  │
-└────┬─────┘                       └──────┬──────┘
-     │                                    │
-     │ 1. POST api/start.php              │
-     ├───────────────────────────────────►│
-     │                                    │
-     │                                    │ 2. job_id yaradır
-     │                                    │    config.json yazır
-     │                                    │    worker.php-i fonda buraxır
-     │                                    │    (start /B)
-     │                                    │
-     │ 3. {ok: true, job_id: "..."}       │
-     │◄───────────────────────────────────┤
-     │                                    │
-     │                                    │
-     │ 4. GET api/status.php?id=...       │      ┌────────────┐
-     ├───────────────────────────────────►│      │ worker.php │
-     │                                    │      │            │
-     │                                    │ ◄────┤ proc_open  │
-     │                                    │      │ ↓          │
-     │                                    │      │ yt-dlp     │
-     │ 5. {state, percent, speed, eta...} │      │ ↓          │
-     │◄───────────────────────────────────┤      │ ffmpeg     │
-     │                                    │      │ ↓          │
-     │  (hər 1.2s-də təkrar...)           │      │ status.json│
-     │                                    │      │ yenilənir  │
-     │                                    │      └────────────┘
-     │                                    │
-     │ 6. state === "done"                │
-     │ GET api/files.php?id=...           │
-     ├───────────────────────────────────►│
-     │ {files: [{name, size}, ...]}       │
-     │◄───────────────────────────────────┤
-     │                                    │
-     │ 7. Endirmə linkləri ilə UI         │
-     │                                    │
+```mermaid
+sequenceDiagram
+    participant U as 👤 User
+    participant B as 🌐 Browser
+    participant A as 🌐 PHP Server (api/)
+    participant W as ⚙️ Worker (CLI)
+    participant Y as 📥 yt-dlp
+    participant F as 📁 status.json
+
+    U->>B: URL yapışdırır
+    B->>A: POST /api/start.php
+    A->>A: job_id yaradır
+    A->>W: start /B (fonda buraxır)
+    A-->>B: { job_id }
+
+    loop Hər 1s
+        B->>A: GET /api/status.php?id=...
+        A->>F: status.json oxu
+        F-->>A: { state, percent, ... }
+        A-->>B: status JSON
+    end
+
+    W->>Y: proc_open
+    loop yt-dlp çıxışı
+        Y-->>W: stdout/stderr
+        W->>F: status.json yenilə
+    end
+
+    W->>F: state = "done"
+    B->>A: GET /api/files.php?id=...
+    A-->>B: fayl siyahısı
+    U->>A: Endir
 ```
 
-### Detallı axın
+### 🧠 Detallı axın
 
-1. **Frontend** (`app.js`): formdan URL + format + keyfiyyət götürür, `FormData` kimi `api/start.php`-ə POST edir.
-
-2. **`api/start.php`**:
-   - URL-i yoxlayır (validation + yalnız YouTube domeni)
-   - Təsadüfi `job_id` yaradır (`bin2hex(random_bytes(8))` — 16 hex simvol)
-   - `jobs/<id>/config.json` yazır
-   - Windows-da `start /B "" php worker.php <id>` ilə işçini fonda buraxır (PHP prosesi tamamlanır, worker davam edir)
-
-3. **`worker.php`** (CLI):
-   - `config.json`-ı oxuyur
-   - `yt-dlp` üçün arqumentləri qurur:
-     - MP3: `-x --audio-format mp3 --audio-quality 0 --embed-thumbnail`
-     - MP4: `-f bestvideo+bestaudio/best --merge-output-format mp4`
-   - `proc_open` ilə işə salır, stdout/stderr non-blocking modda oxuyur
-   - Hər sətri parse edir:
-     - `Downloading item N of M` → playlist progress
-     - `[download] X.X% of Y at Z ETA T` → faiz / sürət / ETA
-   - Hər ~500ms-də `status.json`-u yeniləyir
-
-4. **`api/status.php`**: `status.json`-u oxuyur, log faylının son 8KB-ini əlavə edir, JSON qaytarır.
-
-5. **Frontend polling**: hər 1.2s-də status soruşur, progress bar-ı və meta məlumatları yeniləyir. `state === "done"` olduqda dayandırır.
-
-6. **`api/files.php`**:
-   - `?id=<job>` — JSON siyahı (`.part`, `.ytdl`, `.tmp` faylları çıxarılır)
-   - `?id=<job>&download=<file>` — faylı endirir (path traversal yoxlaması var)
+1. 🎬 **Frontend** (`app.js`) → `FormData` ilə `api/start.php`-ə POST
+2. ✅ **`start.php`** URL-i validate edir, `job_id` yaradır, `worker.php`-i fonda buraxır
+3. 🔧 **`worker.php`** (CLI):
+   - `yt-dlp` üçün arqumentləri qurur
+   - `proc_open` ilə işə salır
+   - `stdout`/`stderr`-i parse edir → `[download] X.X% of Y at Z ETA T`
+   - `status.json` faylını ~400ms-də bir yeniləyir
+4. 🔄 **Frontend polling** hər 1s-də progress soruşur
+5. 📊 **Faza dəyişiklikləri**: `queued → fetching → downloading → converting → finalizing → done`
+6. 📥 **Tamamlandıqda** `api/files.php`-dən siyahı və endirmə linkləri
 
 ---
 
-## API endpoint-lər
+## 🌐 API endpoint-lər
 
-### `POST /api/start.php`
+### 🟢 `POST /api/start.php`
 
-İş başladır.
+Yeni yükləmə işi başladır.
 
-**Body** (form-data):
-- `url` (zəruri) — YouTube link
-- `format` — `mp3` (default) və ya `mp4`
-- `quality` — `best` (default), `medium`, `low`
+**Body** *(form-data)*:
+
+| Sahə | Tip | Tələb olunur | Default |
+|------|-----|--------------|---------|
+| `url` | string | ✅ | — |
+| `format` | `mp3` \| `mp4` | ❌ | `mp3` |
+| `quality` | `best` \| `medium` \| `low` | ❌ | `best` |
 
 **Cavab**:
 ```json
 { "ok": true, "job_id": "a1b2c3d4e5f6a7b8" }
 ```
 
-### `GET /api/status.php?id=<job_id>`
+---
 
-İşin cari statusunu qaytarır.
+### 🔵 `GET /api/status.php?id=<job_id>`
+
+Cari statusu qaytarır.
 
 **Cavab**:
 ```json
 {
   "ok": true,
   "state": "running",
+  "phase": "downloading",
   "percent": 42.5,
   "current_item": 3,
   "total_items": 12,
   "speed": "1.20MiB/s",
   "eta": "00:14",
-  "log": "[download] 42.5% of 4.50MiB at 1.20MiB/s ETA 00:14\n..."
+  "title": "Mahnı adı",
+  "files_count": 2,
+  "files_size": 8765432,
+  "error": null,
+  "log": "[download] 42.5% ..."
 }
 ```
 
-`state` dəyərləri: `queued`, `running`, `done`, `error`, `unknown`.
+**Vəziyyətlər**: `queued` · `running` · `done` · `error` · `cancelled` · `unknown`
 
-### `GET /api/files.php?id=<job_id>`
+**Fazalar**: `queued` → `fetching` → `downloading` → `converting` → `finalizing` → `done`
 
-Yüklənmiş faylların siyahısını qaytarır.
+---
 
-**Cavab**:
+### 🟠 `POST /api/cancel.php`
+
+İşi dayandırır.
+
+```bash
+curl -X POST -d "id=<job_id>" http://localhost:8080/api/cancel.php
+```
+
+---
+
+### 🟣 `GET /api/jobs.php`
+
+Bütün işlərin siyahısı (tarixçə üçün).
+
 ```json
 {
   "ok": true,
-  "files": [
-    { "name": "001 - Mahnı 1.mp3", "size": 4521234 },
-    { "name": "002 - Mahnı 2.mp3", "size": 3987654 }
+  "jobs": [
+    {
+      "job_id": "...", "state": "done", "title": "...",
+      "format": "mp3", "files_count": 12, "files_size": 45678901,
+      "started_at": "2026-05-05T...", "finished_at": "..."
+    }
   ]
 }
 ```
 
-### `GET /api/files.php?id=<job_id>&download=<file_name>`
+---
+
+### 🔴 `POST /api/delete.php`
+
+İşi və bütün fayllarını silir.
+
+```bash
+curl -X POST -d "id=<job_id>" http://localhost:8080/api/delete.php
+```
+
+---
+
+### 🟡 `GET /api/files.php?id=<job_id>`
+
+Yüklənmiş faylların siyahısı.
+
+### `GET /api/files.php?id=<job_id>&download=<file>`
 
 Faylı `application/octet-stream` kimi endirir.
 
 ---
 
-## Konfiqurasiya
-
-Hazırda konfiqurasiya birbaşa kodda sabitdir, lakin asanlıqla dəyişdirə bilərsiniz:
+## ⚙️ Konfiqurasiya
 
 | Parametr | Yer | Default |
 |----------|-----|---------|
-| Port | `serve.bat` | `8080` |
-| Çıxış adlandırma şablonu | `worker.php` | `%(playlist_index)03d - %(title)s.%(ext)s` |
-| Polling intervalı | `assets/app.js` | `1200` ms |
-| Status yeniləmə intervalı | `worker.php` | `0.5` s |
-| Log tail ölçüsü | `api/status.php` | `8192` bayt |
+| 🔌 Port | `serve.bat` | `8080` |
+| 📝 Çıxış adı | `worker.php` | `%(playlist_index)03d - %(title)s.%(ext)s` |
+| ⏱️ Polling intervalı | `assets/app.js` | `1000ms` |
+| 💾 Status yenilənmə | `worker.php` | `400ms` |
+| 📊 Log tail ölçüsü | `api/status.php` | `12288` bayt |
 
 ---
 
-## Təhlükəsizlik
+## 🛡️ Təhlükəsizlik
 
-- **URL validation**: `filter_var(..., FILTER_VALIDATE_URL)` + domain whitelist (yalnız YouTube)
-- **Job ID format**: `[a-z0-9]{8,32}` regex ilə yoxlanılır — heç bir path traversal mümkün deyil
-- **Download path**: `realpath()` ilə həqiqi yol, sonra base directory-yə uyğunluq yoxlanılır
-- **Shell injection**: bütün arqumentlər array kimi qurulur və `proc_open`-a verilərkən düzgün escape olunur
-- **Yalnız yerli istifadə üçün**: `php -S localhost` interfeysi yalnız `localhost`-a bind edir, xaricdən əlçatan deyil
+| Vektor | Qoruma |
+|--------|--------|
+| 🚫 **Path Traversal** | `realpath()` + base-directory prefix yoxlaması (separator daxil) |
+| 🚫 **Command Injection** | URL whitelist + `escapeshellarg` (Unix) / quote escape (Windows) |
+| 🚫 **SSRF** | Yalnız `youtube.com` / `youtu.be` / `music.youtube.com` qəbul olunur |
+| 🚫 **XSS** | `textContent` istifadəsi, `escapeHtml()` history render-də |
+| 🚫 **Job ID injection** | `[a-z0-9]{8,32}` regex ilə validation |
+| 🚫 **Atomic writes** | `status.json` tmp + rename pattern ilə yazılır |
+| 🚫 **Symlink trick** | `realpath` istifadəsi (symlink resolve edir) |
 
-> ⚠️ **Diqqət:** Bu layihə yerli istifadə üçün nəzərdə tutulub. İnternetə aşkar açacaqsanızsa, ən azı authentication, rate limiting və CSRF qoruması əlavə edin.
-
----
-
-## Tez-tez verilən suallar
-
-### `yt-dlp tapılmadı` xətası alıram
-
-Terminalda `where yt-dlp` (Windows) və ya `which yt-dlp` (macOS/Linux) yoxlayın. Cavab boşdursa, `yt-dlp` `PATH`-da deyil. Yenidən quraşdırın və ya tam yolu `worker.php`-də sabit edin:
-
-```php
-$ytdlp = 'C:/path/to/yt-dlp.exe';
-```
-
-### MP3 yüklənmir, fayl `.webm` qalır
-
-`ffmpeg` quraşdırılmayıb və ya `PATH`-da deyil. `yt-dlp` audio çıxarışı üçün `ffmpeg`-ə ehtiyac duyur.
-
-### Progress bar `0%` qalır
-
-- Brauzerdə Console-u açın (F12) — şəbəkə xətası varmı?
-- `jobs/<id>/log.txt` faylını oxuyun — yt-dlp nə yazır?
-- Bəzi videolar (yaş məhdudiyyəti, region kilidi) yüklənə bilməz, amma playlist-in qalanı davam edəcək (`--ignore-errors`).
-
-### Çox böyük playlist üçün vaxt bitdi
-
-PHP CLI server-də timeout yoxdur. Worker prosesi PHP web server-dən asılı deyil, ona görə uzun playlistlər problem deyil. Sadəcə brauzeri açıq saxlayın və ya bağlayıb sonra eyni `job_id` ilə yenidən status soruşun.
-
-### Eyni anda neçə iş işlədə bilərəm?
-
-Texniki olaraq limit yoxdur — hər iş ayrıca CLI prosesdir. Praktik olaraq internet sürəti və CPU (`ffmpeg` çevrilməsi) bottleneck olacaq.
-
-### YouTube xaricindəki saytları dəstəkləyirsiniz?
-
-`yt-dlp` 1000+ saytı dəstəkləyir, lakin bu UI-da `start.php`-də whitelist var. Başqa saytlar üçün `parse_url($url, PHP_URL_HOST)` yoxlamasını silə və ya genişləndirə bilərsiniz.
+> ⚠️ **Diqqət**: Bu layihə **yerli istifadə** üçün dizayn olunub. PHP CLI server `localhost`-a bind olur. İnternetə açacaqsanızsa, ən azı:
+> - 🔐 Authentication
+> - 🛂 CSRF token
+> - 📊 Rate limiting
+> - 🔒 HTTPS
+> əlavə edin.
 
 ---
 
-## Lisenziya
+## ❓ Tez-tez verilən suallar
 
-MIT — istədiyiniz kimi istifadə edin, dəyişdirin, paylaşın.
+<details>
+<summary><strong>🔧 yt-dlp tapılmadı xətası</strong></summary>
 
-`yt-dlp` və `ffmpeg` öz lisenziyaları altındadır (Unlicense və LGPL/GPL müvafiq olaraq).
+`where yt-dlp` (Windows) və ya `which yt-dlp` (macOS/Linux) yoxlayın. Boş çıxırsa, `PATH`-da deyil. Yenidən quraşdırın.
+</details>
+
+<details>
+<summary><strong>🎵 MP3 yüklənmir, .webm qalır</strong></summary>
+
+`ffmpeg` quraşdırılmayıb. yt-dlp audio çevrilməsi üçün ona ehtiyac duyur.
+</details>
+
+<details>
+<summary><strong>📊 Progress bar 0%-də qalır</strong></summary>
+
+- Brauzer Console-da (F12) şəbəkə xətası varmı?
+- `jobs/<id>/yt.log` faylına bax — yt-dlp nə yazır?
+- Bəzi videolar (yaş limit, region kilidi) yüklənə bilməz, amma playlist davam edir.
+</details>
+
+<details>
+<summary><strong>⏱️ Çox böyük playlist üçün vaxt bitir?</strong></summary>
+
+Worker prosesi web server-dən asılı deyil. Brauzeri bağlasanız belə, yenidən açıb eyni `?job=<id>` URL-i ilə davam edə bilərsiniz.
+</details>
+
+<details>
+<summary><strong>🔢 Eyni anda neçə iş işlədə bilərəm?</strong></summary>
+
+Limit yoxdur. Hər iş ayrıca CLI prosesdir. Praktik olaraq internet sürəti və CPU bottleneck olur.
+</details>
+
+<details>
+<summary><strong>🌍 YouTube xaricindəki saytlar?</strong></summary>
+
+`yt-dlp` 1000+ saytı dəstəkləyir, lakin bu UI-da `start.php`-də whitelist var. Genişləndirmək üçün `parse_url` yoxlamasını dəyişdirin.
+</details>
+
+---
+
+## 📜 Lisenziya
+
+[MIT](LICENSE) — istədiyin kimi istifadə et, dəyişdir, paylaş 🎉
+
+`yt-dlp` və `ffmpeg` öz lisenziyaları altındadır.
+
+---
+
+<div align="center">
+
+**Faydalı oldusa ⭐ ver!**
+
+Sual / problem / təklif → [GitHub Issues](https://github.com/goshgarhasanov/yt_playlist_php/issues)
+
+[⬆ Yuxarı qayıt](#-yt-downloader)
+
+</div>

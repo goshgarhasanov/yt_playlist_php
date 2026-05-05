@@ -8,17 +8,27 @@ $dDir = download_dir($jobId);
 if (!is_dir($dDir)) json_response(['ok' => false, 'error' => 'qovluq tapılmadı'], 404);
 
 if (isset($_GET['download'])) {
-    $name = basename($_GET['download']);
-    $path = $dDir . '/' . $name;
+    $name = basename((string)$_GET['download']);
+    if ($name === '' || $name === '.' || $name === '..') {
+        http_response_code(400);
+        exit('Yanlış fayl adı');
+    }
+    $path = $dDir . DIRECTORY_SEPARATOR . $name;
     $real = realpath($path);
     $base = realpath($dDir);
-    if ($real === false || $base === false || strpos($real, $base) !== 0 || !is_file($real)) {
+    if ($real === false || $base === false || !is_file($real)
+        || strncmp($real, $base . DIRECTORY_SEPARATOR, strlen($base) + 1) !== 0) {
         http_response_code(404);
         exit('Fayl tapılmadı');
     }
+    $asciiName = preg_replace('/[^A-Za-z0-9._-]/', '_', $name);
+    if ($asciiName === '' || $asciiName === '.' || $asciiName === '..') $asciiName = 'download.bin';
     header('Content-Type: application/octet-stream');
     header('Content-Length: ' . filesize($real));
-    header('Content-Disposition: attachment; filename="' . rawurlencode($name) . '"');
+    header(
+        'Content-Disposition: attachment; filename="' . $asciiName . '"; '
+        . "filename*=UTF-8''" . rawurlencode($name)
+    );
     header('X-Content-Type-Options: nosniff');
     readfile($real);
     exit;

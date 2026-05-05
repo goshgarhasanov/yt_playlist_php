@@ -1,0 +1,15 @@
+jobs/*
+!jobs/.gitkeep
+
+downloads/*
+!downloads/.gitkeep
+
+*.log
+*.tmp
+*.part
+*.ytdl
+
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

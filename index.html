@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube Playlist Downloader</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>YouTube Playlist Downloader</h1>
+      <p class="sub">Playlist və ya tək video linki yapışdırın, MP3 və ya MP4 formatında yükləyin.</p>
+    </header>
+
+    <section class="card">
+      <form id="form">
+        <label for="url">Playlist / Video URL</label>
+        <input
+          type="url"
+          id="url"
+          name="url"
+          placeholder="https://www.youtube.com/playlist?list=..."
+          required
+          autocomplete="off"
+        />
+
+        <div class="row">
+          <fieldset>
+            <legend>Format</legend>
+            <label class="radio"><input type="radio" name="format" value="mp3" checked /> MP3 (audio)</label>
+            <label class="radio"><input type="radio" name="format" value="mp4" /> MP4 (video)</label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Keyfiyyət</legend>
+            <select id="quality" name="quality">
+              <option value="best">Ən yaxşı</option>
+              <option value="medium">Orta (720p / 192kbps)</option>
+              <option value="low">Aşağı (480p / 128kbps)</option>
+            </select>
+          </fieldset>
+        </div>
+
+        <button type="submit" id="startBtn">Yüklə</button>
+      </form>
+    </section>
+
+    <section class="card hidden" id="progressCard">
+      <h2>Yüklənmə statusu</h2>
+      <div class="status-line">
+        <span id="state" class="badge">gözləyir</span>
+        <span id="itemInfo"></span>
+      </div>
+      <div class="progress">
+        <div class="bar" id="bar"></div>
+      </div>
+      <div class="meta">
+        <span id="percent">0%</span>
+        <span id="speed"></span>
+        <span id="eta"></span>
+      </div>
+      <details>
+        <summary>Log</summary>
+        <pre id="log"></pre>
+      </details>
+    </section>
+
+    <section class="card hidden" id="filesCard">
+      <h2>Yüklənmiş fayllar</h2>
+      <ul id="fileList"></ul>
+    </section>
+  </main>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>

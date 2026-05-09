@@ -9,6 +9,7 @@
 [![FFmpeg](https://img.shields.io/badge/FFmpeg-Required-007808?style=for-the-badge&logo=ffmpeg&logoColor=white)](https://ffmpeg.org/)
 [![License](https://img.shields.io/badge/License-MIT-2EA44F?style=for-the-badge)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-5B8DEF?style=for-the-badge)](#)
+[![Bir qəhvə al](https://img.shields.io/badge/%E2%98%95-Bir%20q%C9%99hv%C9%99%20al-ff7d5a?style=for-the-badge&labelColor=0b1024)](https://kofe.al/@goshgarhasanov)
 
 [**🚀 Başla**](#-i̇şə-salmaq) ·
 [**📖 Sənəd**](#-mündəricat) ·
